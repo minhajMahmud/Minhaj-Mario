@@ -1,0 +1,12 @@
+
+A          o o o                   o o    o o o  o  oo          A
+A         BBBBBBBB              BBBBBBBB BBBBBBBBBBBBB          A
+A                      o 1 o       o 1 o o o o                  A
+A              o   2  1  BBBBBBBB 1   2   BBBBBBBB    BBBBBBBB  A
+A                   BBB BBBBBBBB BB    BBBBBB      o o          A
+A          BBBBBBB  2   1 o    o   2   o  o  o    2    BBBBBBBB A
+A          o            BBBBB     1    o     2            o     A
+A      BBBB   o    o       o    o o oo      1    2   o 1 o      A   
+A          BB   BB       BBBB   BBBBBB     BBBBBBBB     2       A 
+A    o  1    o     1  o  2    o  1   o o o o o o    1    ooo    *  
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA

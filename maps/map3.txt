@@ -1,0 +1,9 @@
+A                       
+A                    BBBBBBBB     o  o  BBB                     A
+A       BBBBBBBB       2       BBBBBBBB  2  BBBB    BBBB    1   A 
+A         1    2   1  o      2   o  o       o2  2      BBBBBBBB A
+A          o     2   o    BBBBBBBB     BBBBBBBB   1  2          A
+A         BBBB   o  1      2      o       1    2    1     2     A
+A             1    1    o  o    1     BBBBBBBBBBBB      o       A
+A      1   1 o   BBBBBBBBBBBBBBB     o o o o o o    1   o     * A
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
