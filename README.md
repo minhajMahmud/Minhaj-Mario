@@ -112,8 +112,19 @@ After completion, install using the `.exe` file generated inside the `dist/` fol
 
 This repo includes a GitHub Actions workflow at `.github/workflows/release-exe.yml`.
 
-* On pushing a tag like `v1.0.0`, it builds the Windows installer `.exe` and attaches it to a GitHub Release.
+* On pushing a tag like `v1.0.0`, it builds and publishes two assets.
+* `Minhaj-Mario-installer-vX.Y.Z.exe` (**installer**)
+* `Minhaj-Mario-portable-vX.Y.Z.zip` (**portable build**, no install wizard)
 * You can also run it manually from the **Actions** tab.
+
+### 📦 Which file should users download?
+
+From **GitHub Releases**:
+
+* Use `Minhaj-Mario-installer-vX.Y.Z.exe` if you want normal Windows installation.
+* Use `Minhaj-Mario-portable-vX.Y.Z.zip` if you want a portable version; extract and run `Minhaj-Mario.exe` from the extracted folder.
+
+> ⚠️ Do not download a standalone launcher `.exe` from inside an app-image folder by itself. It needs its bundled runtime files next to it.
 
 Example tag flow:
 

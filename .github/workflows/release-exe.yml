@@ -1,4 +1,4 @@
-name: Build and Release Windows EXE
+name: Build and Release Windows Packages
 
 on:
   push:
@@ -10,8 +10,10 @@ permissions:
   contents: write
 
 jobs:
-  build-windows-exe:
+  build-windows-packages:
     runs-on: windows-latest
+    env:
+      RELEASE_VERSION: ${{ github.ref_name }}
 
     steps:
       - name: Checkout
@@ -36,7 +38,12 @@ jobs:
         run: |
           powershell -ExecutionPolicy Bypass -File .\build-installer.ps1 -PackageType exe
 
-      - name: Collect generated EXE
+      - name: Build portable app image
+        shell: pwsh
+        run: |
+          powershell -ExecutionPolicy Bypass -File .\build-installer.ps1 -PackageType app-image
+
+      - name: Collect and rename release assets
         id: collect
         shell: pwsh
         run: |
@@ -44,18 +51,35 @@ jobs:
           if (-not $installer) {
             throw "No installer EXE found in dist/."
           }
-          "installer_path=$($installer.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-          "installer_name=$($installer.Name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
-      - name: Upload workflow artifact
+          $portableDir = Join-Path (Resolve-Path .\dist).Path "Minhaj-Mario"
+          if (-not (Test-Path $portableDir)) {
+            throw "Portable app-image folder not found at dist/Minhaj-Mario/."
+          }
+
+          $installerOut = Join-Path (Resolve-Path .\dist).Path "Minhaj-Mario-installer-$env:RELEASE_VERSION.exe"
+          $portableZipOut = Join-Path (Resolve-Path .\dist).Path "Minhaj-Mario-portable-$env:RELEASE_VERSION.zip"
+
+          Copy-Item -Path $installer.FullName -Destination $installerOut -Force
+          if (Test-Path $portableZipOut) { Remove-Item $portableZipOut -Force }
+          Compress-Archive -Path $portableDir -DestinationPath $portableZipOut
+
+          "installer_path=$installerOut" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "portable_zip_path=$portableZipOut" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Upload workflow artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: windows-installer-exe
-          path: ${{ steps.collect.outputs.installer_path }}
+          name: windows-packages
+          path: |
+            ${{ steps.collect.outputs.installer_path }}
+            ${{ steps.collect.outputs.portable_zip_path }}
 
-      - name: Attach EXE to GitHub Release
+      - name: Attach packages to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ steps.collect.outputs.installer_path }}
+          files: |
+            ${{ steps.collect.outputs.installer_path }}
+            ${{ steps.collect.outputs.portable_zip_path }}
           generate_release_notes: true
