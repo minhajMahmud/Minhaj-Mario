@@ -1,0 +1,61 @@
+name: Build and Release Windows EXE
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - name: Install WiX Toolset
+        shell: pwsh
+        run: |
+          choco install wixtoolset -y
+          $env:PATH += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
+          candle -?
+          light -?
+
+      - name: Build installer EXE
+        shell: pwsh
+        run: |
+          powershell -ExecutionPolicy Bypass -File .\build-installer.ps1 -PackageType exe
+
+      - name: Collect generated EXE
+        id: collect
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem -Path .\dist -Filter *.exe -File | Select-Object -First 1
+          if (-not $installer) {
+            throw "No installer EXE found in dist/."
+          }
+          "installer_path=$($installer.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "installer_name=$($installer.Name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer-exe
+          path: ${{ steps.collect.outputs.installer_path }}
+
+      - name: Attach EXE to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.collect.outputs.installer_path }}
+          generate_release_notes: true

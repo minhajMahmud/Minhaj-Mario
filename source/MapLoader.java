@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 public class MapLoader
@@ -29,8 +30,42 @@ public class MapLoader
     }
     public Image loadImage(String name) 
     {
-        String filename = "images/" + name;
-        return new ImageIcon(filename).getImage();
+        File imageFile = resolveFile("images/" + name);
+        return new ImageIcon(imageFile.getPath()).getImage();
+    }
+
+    private File resolveFile(String relativePath)
+    {
+        File directPath = new File(relativePath);
+        if (directPath.exists()) {
+            return directPath;
+        }
+
+        try {
+            File codeSource = new File(MapLoader.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI());
+            File baseDir = codeSource.isFile() ? codeSource.getParentFile() : codeSource;
+
+            if (baseDir != null) {
+                File fromBase = new File(baseDir, relativePath);
+                if (fromBase.exists()) {
+                    return fromBase;
+                }
+
+                File fromParent = new File(baseDir.getParentFile(), relativePath);
+                if (fromParent.exists()) {
+                    return fromParent;
+                }
+            }
+        }
+        catch (URISyntaxException ignored) {
+            // Fallback to directPath for caller error handling.
+        }
+
+        return directPath;
     }
 
 
@@ -89,7 +124,7 @@ Transparency.BITMASK);
         ArrayList<String> lines = new ArrayList<>();
         int width = 0;
         int height ;
-        BufferedReader reader = new BufferedReader( new FileReader(filename));
+        BufferedReader reader = new BufferedReader(new FileReader(resolveFile(filename)));
         while (true) {
             String line = reader.readLine();
             if (line == null) {
@@ -148,7 +183,7 @@ sprite.setY(TileDraw.tilesToPixels(tileY + 1) -sprite.getHeight());
         char ch = 'A'; 
         while (true) 
         {String name = ch + ".png";
-            File file = new File("images/" + name);
+            File file = resolveFile("images/" + name);
             if (!file.exists()) 
                 break; 
             tiles.add(loadImage(name));

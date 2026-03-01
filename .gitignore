@@ -1,0 +1,16 @@
+# Java build artifacts
+*.class
+
+# IDE/build output
+build/
+dist/
+out/
+
+# Legacy compiled output folders in this repo
+source/*.class
+bin/*.class
+
+# Logs / temp
+*.log
+*.tmp
+*.bak

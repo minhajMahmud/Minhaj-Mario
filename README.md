@@ -79,6 +79,51 @@ SuperMarioGame/
 
 ---
 
+## 🧰 Build Windows Installer (.exe)
+
+This repository includes `build-installer.ps1` to create an installable Windows `.exe` using `jpackage`.
+
+It will:
+
+* Compile all Java files from `source/`
+* Create `Minhaj-Mario.jar`
+* Copy `images/` and `maps/`
+* Build installer output in `dist/`
+
+Run from project root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
+```
+
+If WiX is not installed, you can still build a portable package (contains `Minhaj-Mario.exe`) with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build-installer.ps1 -PackageType app-image
+```
+
+Portable output path:
+
+* `dist/Minhaj-Mario/Minhaj-Mario.exe`
+
+After completion, install using the `.exe` file generated inside the `dist/` folder.
+
+### 🚀 Publish `.exe` via GitHub Releases
+
+This repo includes a GitHub Actions workflow at `.github/workflows/release-exe.yml`.
+
+* On pushing a tag like `v1.0.0`, it builds the Windows installer `.exe` and attaches it to a GitHub Release.
+* You can also run it manually from the **Actions** tab.
+
+Example tag flow:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+---
+
 ## 🎮 Controls
 
 | Action     | Key   |
