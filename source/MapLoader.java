@@ -9,11 +9,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.swing.ImageIcon;
-public class MapLoader 
+public class MapLoader
 {
-    public ArrayList tiles;
+      public ArrayList<Image> tiles;
     public int currentMap;
     public GraphicsConfiguration gc;
     public Sprite player;
@@ -87,7 +86,7 @@ Transparency.BITMASK);
         }
     }
     public TileMap loadMap(String filename) throws IOException{
-        ArrayList lines = new ArrayList();
+        ArrayList<String> lines = new ArrayList<>();
         int width = 0;
         int height ;
         BufferedReader reader = new BufferedReader( new FileReader(filename));
@@ -105,12 +104,12 @@ Transparency.BITMASK);
         height = lines.size();
         TileMap newMap = new TileMap(width, height);
         for (int y=0; y<height; y++) {
-            String line = (String)lines.get(y);
+            String line = lines.get(y);
             for (int x=0; x<line.length(); x++) {
                 char ch = line.charAt(x);
                 int tile = ch - 'A';
                 if (tile >= 0 && tile < tiles.size()) {
-                    newMap.setTile(x, y, (Image)tiles.get(tile));
+                    newMap.setTile(x, y, tiles.get(tile));
                 }
                 else if (ch == 'o') {
                     addSprite(newMap,bonus, x, y);
@@ -144,8 +143,8 @@ Transparency.BITMASK);
 sprite.setY(TileDraw.tilesToPixels(tileY + 1) -sprite.getHeight());
  map.addSprite(sprite);
         }
-    } public void loadTileImages() {
-        tiles = new ArrayList();
+    } private void loadTileImages() {
+        tiles = new ArrayList<>();
         char ch = 'A'; 
         while (true) 
         {String name = ch + ".png";
@@ -156,7 +155,7 @@ sprite.setY(TileDraw.tilesToPixels(tileY + 1) -sprite.getHeight());
             ch++;
         }
     }
-    public void loadCreatureSprites() 
+    private void loadCreatureSprites() 
     {
 
         Image[][] images = new Image[4][];
@@ -221,7 +220,6 @@ sprite.setY(TileDraw.tilesToPixels(tileY + 1) -sprite.getHeight());
         anim.addFrame(loadImage("bonus.png"),250 ) ;  
         
        bonus= new PowerUp.Star(anim);
-        anim = new Animation();
     }
 
 }
